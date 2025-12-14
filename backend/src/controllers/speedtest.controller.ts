@@ -20,3 +20,15 @@ export const download = (req: Request, res: Response) => {
     }
   });
 };
+
+export const upload = (req: Request, res: Response) => {
+  const startTime = parseInt(req.headers["x-start-time"] as string);
+  const receivedTime = Date.now();
+  const dataSize = parseInt(req.headers["content-length"] || "0");
+
+  res.json({
+    receivedTime,
+    dataSize,
+    duration: receivedTime - startTime,
+  });
+};
