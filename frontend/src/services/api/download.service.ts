@@ -1,7 +1,7 @@
 import { API_CONFIG } from "@/config/api.config";
 
 export const downloadService = {
-  async test(sizeInMb: number = 1): Promise<number> {
+  async test(sizeInMb: number = 10): Promise<number> {
     const startTime = Date.now();
     const response = await fetch(
       `${API_CONFIG.BASE_URL}/download?size=${sizeInMb}mb`

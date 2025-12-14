@@ -1,7 +1,7 @@
 import { API_CONFIG } from "@/config/api.config";
 
 export const uploadService = {
-  async test(sizeInMB: number = 1): Promise<number> {
+  async test(sizeInMB: number = 10): Promise<number> {
     const data = new Uint8Array(1024 * 1024 * sizeInMB);
     const startTime = Date.now();
 
