@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { pingService, uploadService, downloadService } from "@/services/api";
+import { pingService, downloadService, uploadService } from "@/services/api";
 import { SpeedTestResult, TestStatus } from "@/types/speedtest.types";
 
 export const useSpeedTest = () => {
@@ -14,23 +14,38 @@ export const useSpeedTest = () => {
     setError(null);
 
     try {
-      //Test ping
+      // Test ping 3 times
       setStatus("ping");
-      const ping = await pingService.test();
+      const pingTests = await Promise.all([
+        pingService.test(),
+        pingService.test(),
+        pingService.test(),
+      ]);
+      const ping = Math.round(
+        pingTests.reduce((a, b) => a + b, 0) / pingTests.length
+      );
 
-      //Test download
+      // Test download 2 times
       setStatus("download");
-      const download = await downloadService.test();
+      const downloadTests = await Promise.all([
+        downloadService.test(10),
+        downloadService.test(10),
+      ]);
+      const download = Math.max(...downloadTests);
 
-      //Test upload
+      // Test upload 2 times
       setStatus("upload");
-      const upload = await uploadService.test();
+      const uploadTests = await Promise.all([
+        uploadService.test(10),
+        uploadService.test(10),
+      ]);
+      const upload = Math.max(...uploadTests);
 
       setResults({ ping, download, upload });
       setStatus("complete");
     } catch (err) {
-      console.log("Speed test failed", err);
-      setError("Test failed. Please try again");
+      console.error("Speed test failed:", err);
+      setError("Test failed. Please try again.");
       setStatus("error");
     } finally {
       setIsRunning(false);
